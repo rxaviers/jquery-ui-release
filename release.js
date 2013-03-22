@@ -1,18 +1,24 @@
 #!/usr/bin/env node
 /*global cat:true cd:true echo:true exec:true exit:true*/
-
-// Usage:
-// stable release: node release.js
-// pre-release: node release.js --pre-release {version}
+/**
+ * Usage:
+ * stable release: node release.js
+ * pre-release: node release.js --pre-release {version}
+ *
+ * Copyright 2013 jQuery Foundation and other contributors
+ * Released under the MIT license.
+ * http://jquery.org/license
+ */
 
 "use strict";
 
 var baseDir, repoDir, prevVersion, newVersion, nextVersion, tagTime, preRelease,
 	fs = require( "fs" ),
-	rnewline = /\r?\n/,
-	repo = "git@github.com:jquery/jquery-ui.git",
-	branch = "master";
+	path = require( "path" ),
+	config = JSON.parse( fs.readFileSync( path.join( __dirname, "config.json" ) ) ),
+	rnewline = /\r?\n/;
 
+// TODO why not use async?
 walk([
 	bootstrap,
 
@@ -34,7 +40,7 @@ walk([
 	section( "updating branch version" ),
 	updateBranchVersion,
 
-	section( "pushing " + branch ),
+	section( "pushing " + config.branch ),
 	confirmReview,
 	pushBranch,
 
@@ -54,12 +60,12 @@ walk([
 
 
 function cloneRepo() {
-	echo( "Cloning " + repo.cyan + "..." );
-	git( "clone " + repo + " " + repoDir, "Error cloning repo." );
+	echo( "Cloning " + config.repo.cyan + "..." );
+	git( "clone " + config.repo + " " + repoDir, "Error cloning repo." );
 	cd( repoDir );
 
-	echo( "Checking out " + branch.cyan + " branch..." );
-	git( "checkout " + branch, "Error checking out branch." );
+	echo( "Checking out " + config.branch.cyan + " branch..." );
+	git( "checkout " + config.branch, "Error checking out branch." );
 	echo();
 
 	echo( "Installing dependencies..." );
@@ -188,8 +194,8 @@ function updateBranchVersion() {
 
 	var pkg;
 
-	echo( "Checking out " + branch.cyan + " branch..." );
-	git( "checkout " + branch, "Error checking out " + branch + " branch." );
+	echo( "Checking out " + config.branch.cyan + " branch..." );
+	git( "checkout " + config.branch, "Error checking out " + config.branch + " branch." );
 
 	echo( "Updating package.json..." );
 	pkg = readPackage();
@@ -197,7 +203,7 @@ function updateBranchVersion() {
 	writePackage( pkg );
 
 	echo( "Committing version update..." );
-	git( "commit -am 'Updating the " + branch + " version to " + nextVersion + ".'",
+	git( "commit -am 'Updating the " + config.branch + " version to " + nextVersion + ".'",
 		"Error committing package.json." );
 }
 
@@ -207,7 +213,7 @@ function pushBranch() {
 		return;
 	}
 
-	echo( "Pushing " + branch.cyan + " to GitHub..." );
+	echo( "Pushing " + config.branch.cyan + " to GitHub..." );
 	git( "push", "Error pushing to GitHub." );
 }
 
