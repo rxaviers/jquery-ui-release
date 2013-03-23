@@ -1,6 +1,6 @@
 # Release Checklist
 
-## Getting startet
+## Getting started
 
 Make sure AUTHORS.txt is up-to-date. Run this to get a list, sync that with the file:
 
@@ -8,10 +8,12 @@ Make sure AUTHORS.txt is up-to-date. Run this to get a list, sync that with the 
 grunt authors
 ```
 
-Download and run the release script in an empty directory:
+Clone jquery-ui-release repo and run the release script:
 
 ```
-curl https://raw.github.com/jquery/jquery-ui/[release-branch]/build/release/release.js > release.js && node release.js
+git clone git@github.com:rxaviers/jquery-ui-release.git
+cd jquery-ui-release
+node release.js
 ```
 
 ### Dry Run
