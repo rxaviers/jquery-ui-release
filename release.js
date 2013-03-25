@@ -386,18 +386,9 @@ function bootstrap( fn ) {
 	console.log( "Creating directory..." );
 	fs.mkdirSync( baseDir );
 
-	console.log( "Installing dependencies..." );
-	require( "child_process" ).exec( "npm install shelljs colors", function( error ) {
-		if ( error ) {
-			console.log( error );
-			return process.exit( 1 );
-		}
-
-		require( "shelljs/global" );
-		require( "colors" );
-
-		fn();
-	});
+	require( "shelljs/global" );
+	require( "colors" );
+	fn();
 }
 
 function section( name ) {
